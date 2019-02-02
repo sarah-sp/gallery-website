@@ -21,6 +21,6 @@ const ScrollToTopComp =  withRouter(ScrollToTop)
 ReactDOM.render(
     <BrowserRouter>
         <ScrollToTopComp>
-            <App/>
+            <App />
         </ScrollToTopComp>
     </BrowserRouter>, document.getElementById('root'));

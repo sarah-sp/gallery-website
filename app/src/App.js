@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Routes from './routes/Routes.js'
 import {Link, withRouter} from 'react-router-dom';
 import withStyles from "@material-ui/core/styles/withStyles";
+import AdminPage from "./admin/AdminPage";
 
 let sidebarW = 30
 let contentW = 100 - sidebarW
@@ -31,20 +32,42 @@ const styles = (theme) => ({
 
 class App extends Component {
 
+    constructor(props){
+        super(props)
+
+        this.state = {
+            isAdmin: false
+        }
+    }
+
+    auth = () => {
+        this.setState({
+            isAdmin: true
+        })
+    }
 
     render() {
         const {classes} = this.props
-        let cProps = {}
+
+        const cProps = {
+            auth: this.auth
+        }
 
         return (
-            <div className={classes.root}>
-                <div className={classes.sidebar}>
-                    <b style={{fontSize: 150}}>SPA Template</b>
-                </div>
-                <div className={classes.content}>
-                    <Routes cProps/>
-                </div>
-            </div>
+            <>
+                {this.state.isAdmin ?
+                    <AdminPage/>
+                    :
+                    <div className={classes.root}>
+                        <div className={classes.sidebar}>
+                            <b style={{fontSize: 150}}>SPA Template</b>
+                        </div>
+                        <div className={classes.content}>
+                            <Routes childProps={cProps}/>
+                        </div>
+                    </div>
+                }
+            </>
         );
     }
 }
