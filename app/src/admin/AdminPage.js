@@ -1,10 +1,35 @@
 import React from 'react';
 import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Hidden from '@material-ui/core/Hidden';
 import Navigator from './Navigator';
 import Content from './Content';
 import Header from './Header';
+import Page from "@material-ui/icons/ImportContacts";
+import Content2 from "./Content2";
+import SettingsIcon from '@material-ui/icons/Settings';
+
+
+const defaultOptions = [{id: "Edit", content: <Content />}]
+
+const categories = [
+    {
+        id: 'Pages',
+        children: [
+            { id: 'Collection', icon: <Page />, active: true, options: defaultOptions},
+            { id: 'Events', icon: <Page />, options: [{id: "Create", content: <Content2 />},{id: "Edit", content: <Content />}]},
+            { id: 'Visiting', icon: <Page />, options: defaultOptions},
+            { id: 'About us', icon: <Page />, options: defaultOptions},
+            { id: 'Contact', icon: <Page />, options: defaultOptions},
+        ],
+    },
+    {
+        id: 'Settings',
+        children: [
+            { id: 'Webpage', icon: <SettingsIcon />, options: defaultOptions},
+            { id: 'Analytics', icon: <SettingsIcon />, options: defaultOptions},
+        ],
+    }
+];
 
 let theme = createMuiTheme({
     typography: {
@@ -147,14 +172,25 @@ const styles = {
     },
 };
 
-class AdminPage extends React.Component {
-    state = {
-        mobileOpen: false,
-    };
 
-    handleDrawerToggle = () => {
-        this.setState(state => ({ mobileOpen: !state.mobileOpen }));
-    };
+class AdminPage extends React.Component {
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            activeOptions: categories[0].children[0].options,
+            activeContent: <Content />
+        };
+    }
+
+    handleNavigate = (options) => {
+        this.setState({activeOptions: options, activeContent: options[0].content})
+    }
+
+    handleChangeContent = content => {
+        this.setState({activeContent: content})
+    }
 
     render() {
         const { classes } = this.props;
@@ -164,22 +200,12 @@ class AdminPage extends React.Component {
                 <div className={classes.root}>
                     <CssBaseline />
                     <nav className={classes.drawer}>
-                        <Hidden smUp implementation="js">
-                            <Navigator
-                                PaperProps={{ style: { width: drawerWidth } }}
-                                variant="temporary"
-                                open={this.state.mobileOpen}
-                                onClose={this.handleDrawerToggle}
-                            />
-                        </Hidden>
-                        <Hidden xsDown implementation="css">
-                            <Navigator PaperProps={{ style: { width: drawerWidth } }} />
-                        </Hidden>
+                        <Navigator PaperProps={{ style: { width: drawerWidth } }} categories={categories} handleNavigate={this.handleNavigate}/>
                     </nav>
                     <div className={classes.appContent}>
-                        <Header onDrawerToggle={this.handleDrawerToggle} />
+                        <Header options={this.state.activeOptions} changeContent={this.handleChangeContent}/>
                         <main className={classes.mainContent}>
-                            <Content />
+                            {this.state.activeContent}
                         </main>
                     </div>
                 </div>
