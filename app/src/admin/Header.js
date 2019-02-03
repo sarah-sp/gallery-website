@@ -13,7 +13,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
@@ -39,92 +39,87 @@ const styles = theme => ({
     },
 });
 
-function Header(props) {
-    const { classes, onDrawerToggle } = props;
+class Header extends React.Component {
 
-    return (
-        <React.Fragment>
-            <AppBar color="primary" position="sticky" elevation={0}>
-                <Toolbar>
-                    <Grid container spacing={8} alignItems="center">
-                        <Hidden smUp>
-                            <Grid item>
-                                <IconButton
-                                    color="inherit"
-                                    aria-label="Open drawer"
-                                    onClick={onDrawerToggle}
-                                    className={classes.menuButton}
-                                >
-                                    <MenuIcon />
-                                </IconButton>
-                            </Grid>
-                        </Hidden>
-                        <Grid item xs />
-                        <Grid item>
-                            <Typography className={classes.link} component="a" href="#">
-                                Go to docs
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <Tooltip title="Alerts • No alters">
-                                <IconButton color="inherit">
-                                    <NotificationsIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </Grid>
-                        <Grid item>
-                            <IconButton color="inherit" className={classes.iconButtonAvatar}>
-                                <Avatar className={classes.avatar} src="/static/images/avatar/1.jpg" />
+    constructor(props) {
+        super(props)
+        this.state = {
+            selected: this.props.options[0].id
+        }
+    }
+
+    componentWillReceiveProps(props) {
+        if(this.props.options !== props.options) {
+            this.setState({
+                selected: props.options[0].id
+            })
+        }
+    }
+
+    handleTab = (option) => () => {
+        this.props.changeContent(option.content)
+        this.setState({
+            selected: option.id
+        })
+    }
+
+    renderPrimaryBar = classes => (
+        <AppBar color="primary" position="sticky" elevation={0}>
+            <Toolbar>
+                <Grid container spacing={8} alignItems="center">
+                    <Grid item xs/>
+                    <Grid item>
+                        <Typography className={classes.link} component="a" href="#">
+                            Go to docs
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <Tooltip title="Alerts • No alters">
+                            <IconButton color="inherit">
+                                <NotificationsIcon/>
                             </IconButton>
-                        </Grid>
+                        </Tooltip>
                     </Grid>
-                </Toolbar>
-            </AppBar>
-            <AppBar
-                component="div"
-                className={classes.secondaryBar}
-                color="primary"
-                position="static"
-                elevation={0}
-            >
-                <Toolbar>
-                    <Grid container alignItems="center" spacing={8}>
-                        <Grid item xs>
-                            <Typography color="inherit" variant="h5">
-                                Authentication
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <Button className={classes.button} variant="outlined" color="inherit" size="small">
-                                Web setup
-                            </Button>
-                        </Grid>
-                        <Grid item>
-                            <Tooltip title="Help">
-                                <IconButton color="inherit">
-                                    <HelpIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </Grid>
+                    <Grid item>
+                        <Tooltip title="Help">
+                            <IconButton color="inherit">
+                                <HelpIcon/>
+                            </IconButton>
+                        </Tooltip>
                     </Grid>
-                </Toolbar>
-            </AppBar>
-            <AppBar
-                component="div"
-                className={classes.secondaryBar}
-                color="primary"
-                position="static"
-                elevation={0}
-            >
-                <Tabs value={0} textColor="inherit">
-                    <Tab textColor="inherit" label="Users" />
-                    <Tab textColor="inherit" label="Sign-in method" />
-                    <Tab textColor="inherit" label="Templates" />
-                    <Tab textColor="inherit" label="Usage" />
-                </Tabs>
-            </AppBar>
-        </React.Fragment>
+                </Grid>
+            </Toolbar>
+        </AppBar>
+    )
+
+
+    renderSecondaryBar = classes => (
+        <AppBar
+            component="div"
+            className={classes.secondaryBar}
+            color="primary"
+            position="static"
+            elevation={0}
+        >
+            <Tabs value={this.state.selected} textColor="inherit">
+                {this.props.options.map(option =>
+                    <Tab textColor="inherit" value={option.id} label={option.id} onClick={this.handleTab(option)}/>
+                )}
+            </Tabs>
+        </AppBar>
     );
+
+
+    render() {
+        const {classes} = this.props;
+
+        return (
+            <React.Fragment>
+                {this.renderPrimaryBar(classes)}
+                {this.renderSecondaryBar(classes)}
+            </React.Fragment>
+        );
+    }
 }
 
 export default withStyles(styles)(Header);
