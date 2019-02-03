@@ -27,7 +27,6 @@ const styles = ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-end',
-        //justifyContent: 'space-evenly',
         width: sidebarW + 'vw',
         position: 'fixed',
         height: '95vh',
@@ -74,7 +73,7 @@ class App extends Component {
         super(props);
 
         this.state = {
-            isAdmin: true
+            isAdmin: false
         }
     }
 
@@ -102,7 +101,7 @@ class App extends Component {
                     <MuiThemeProvider theme={main_theme}>
                         <div className={classes.root}>
                             <div className={classes.sidebar}>
-                                <Link to={"/"}>
+                                <Link to={"/"} onClick={() => this.setState({isItemClicked: ""})}>
                                     <img className={classes.image} src={logo}/>
                                 </Link>
                                 {sidebar_items.map(item =>
