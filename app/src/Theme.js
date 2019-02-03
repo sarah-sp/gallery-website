@@ -9,10 +9,11 @@ export const main_theme = createMuiTheme({
             main: '#9e9e9e',
             dark: '#8d8d8d',
             contrastText: '#111111',
+            fontFamily: 'Bad Script'
 
         },
         typography: {
-            fontFamily: 'Bad Script'
+            fontFamily: 'Ruslan Display'
         }
     }
 });
